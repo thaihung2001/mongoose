@@ -1,10 +1,31 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+const options = {
+  connectTimeoutMS: 30000, // 30 seconds timeout for establishing the connection
+  socketTimeoutMS: 45000 // 45 seconds timeout for socket operations
+};
+mongoose.connect(process.env.MONGO_URI,options).then(()=>{
+  console.log("successfully connected to DATABASE")});
+let personSchema = new Schema ({
 
+  name: {type:String, requried: true},
+  age: Number,
+  favoriteFoods: Array  
+})
 
-let Person;
+let Person = mongoose.model("Person", personSchema);
 
-const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+var createAndSavePerson = function() {
+  var person = new Person({name: "Developer", age: 23, favoriteFoods: ["Mì Xào Trứng", "Bún Bò"]});
+
+  person.save()
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
